@@ -1,91 +1,83 @@
-
 import streamlit as st
 import random
 import time
 import pandas as pd
 
-# PAGE CONFIG
-st.set_page_config(
-    page_title="LEADFORGE AI | Brand Up Digital", 
-    page_icon="🚀", 
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+# SESSION STATE FOR LOGIN
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+if 'page' not in st.session_state:
+    st.session_state.page = 'Home'
 
-# PROFESSIONAL CSS - Dark + Gold + Blue. 100% Mobile Responsive
+st.set_page_config(page_title="LEADFORGE AI | Brand Up Digital", page_icon="🚀", layout="wide")
+
+# --- FINAL PROFESSIONAL CSS ---
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-    html, body, [class*="st-"] {font-family: 'Poppins', sans-serif;}
-    .main {background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #E0E0E0;}
-    .stTitle {color: #FFD700; font-weight: 700; font-size: clamp(28px, 5vw, 45px);} /* Responsive font */
-    .stSubheader {color: #00A3FF; font-weight: 400;}
-    .stButton>button {background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%); color: #0a0a0a; font-weight: 700; border-radius: 12px; height: 3.2em; border: none; width: 100%; font-size: 16px; transition: 0.3s;}
-    .stButton>button:hover {transform: scale(1.02); box-shadow: 0 0 15px #FFD700;}
-    .card {background-color: rgba(255,255,255,0.05); padding: 25px; border-radius: 15px; border: 1px solid rgba(255,215,0,0.2); backdrop-filter: blur(10px);}
-    div[data-testid="stDataFrame"] {border: 1px solid #FFD700; border-radius: 12px; background-color: #1a1a2e;}
-    .footer {text-align: center; color: #888; padding-top: 30px; font-size: 12px;}
-    /* Mobile Responsive Fix */
-    @media (max-width: 768px) {
-        .stColumns {flex-direction: column !important;}
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+    html, body {font-family: 'Poppins', sans-serif; background-color: #001F3F;} /* NAVY BLUE */
+    .main {background-color: #001F3F; color: #FFFFFF;}
+    .stTitle {color: #00FF7F; font-weight: 700;} /* LIGHT GREEN */
+    .stSubheader {color: #ADD8E6;} /* LIGHT BLUE */
+    .card {background-color: #004D40; padding: 25px; border-radius: 15px; border: 1px solid #00FF7F; margin-bottom: 20px;} /* DARK GREEN */
+    div[data-testid="stTextInput"]>div>div>input {background-color: #E0F7FA; color: #001F3F; border-radius: 10px; border: 2px solid #00FF7F; font-weight: 600;} /* LIGHT BLUE BOX */
+    .stButton>button {background: linear-gradient(90deg, #00FF7F 0%, #32CD32 100%); color: #001F3F; font-weight: 700; border-radius: 12px; height: 3.2em; border: none; width: 100%;}
+    .pricing-card {background-color: #004D40; padding: 20px; border-radius: 15px; text-align: center; border: 2px solid #00FF7F;}
 </style>
 """, unsafe_allow_html=True)
 
-# HEADER
-with st.container():
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    col1, col2 = st.columns([1,5])
-    with col1:
-        st.markdown("🚀", unsafe_allow_html=True) # Big Icon
-    with col2:
-        st.title("LEADFORGE AI")
-        st.subheader("By Brand Up Digital - Pakistan's #1 Lead Generation Tool")
-    st.markdown("#### Get 100+ verified business leads for any industry in any Pakistani city in 30 seconds")
-    st.markdown('</div>', unsafe_allow_html=True)
+# --- NAVBAR ---
+col1, col2, col3, col4 = st.columns([3,1,1,1])
+with col1: st.title("🚀 LEADFORGE AI")
+with col2: 
+    if st.button("Home"): st.session_state.page = 'Home'
+with col3: 
+    if st.button("Pricing"): st.session_state.page = 'Pricing'
+with col4: 
+    if st.button("Login" if not st.session_state.logged_in else "Dashboard"): st.session_state.page = 'Login'
 
-st.write("") # spacing
+# --- PAGE LOGIC ---
+if st.session_state.page == 'Home':
+    with st.container():
+        st.markdown('<div class="card">', unsafe_allow_html=True)
+        st.markdown("### World's #1 Free Lead Generation Tool")
+        st.markdown("Get 500+ verified business leads for ANY industry in ANY city WORLDWIDE")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-# INPUT SECTION
-with st.container():
-    st.markdown('<div class="card">', unsafe_allow_html=True)
-    st.markdown("### 🎯 Generate Your Leads")
-    col1, col2, col3 = st.columns(3) # یہ موبائل پر خود بخود نیچے آ جائیں گے
+elif st.session_state.page == 'Pricing':
+    st.markdown("### 💎 Choose Your Plan")
+    col1, col2, col3 = st.columns(3)
     with col1:
-        city = st.text_input("🏙️ Enter City", "Lahore", placeholder="e.g. Karachi, Islamabad")
+        st.markdown('<div class="pricing-card"><h3>Free</h3><h2>$0</h2><p>100 Leads / Month</p></div>', unsafe_allow_html=True)
     with col2:
-        industry = st.text_input("🏢 Enter Industry", "Real Estate", placeholder="e.g. Doctors, Lawyers")
+        st.markdown('<div class="pricing-card" style="border-color: #FFD700;"><h3>Pro</h3><h2>$29</h2><p>5000 Leads / Month</p></div>', unsafe_allow_html=True)
     with col3:
-        num_leads = st.slider("Number of Leads", 10, 500, 100)
+        st.markdown('<div class="pricing-card"><h3>Agency</h3><h2>$99</h2><p>Unlimited Leads</p></div>', unsafe_allow_html=True)
 
-    if st.button("Generate Leads 🔥", use_container_width=True):
-        with st.spinner("🔍 Finding verified leads... Please wait 30 seconds"):
-            time.sleep(3)
-            
-        st.success(f"✅ Successfully Found {num_leads} leads for **{industry}** in **{city}**!")
-        
-        data = []
-        for i in range(1, num_leads + 1):
-            data.append({
-                "Sr#": i,
-                "Business Name": f"{industry} Business {i}",
-                "Phone": f"03{random.randint(10000000, 99999999)}",
-                "Email": f"info{i}@{industry.lower().replace(' ', '')}.com",
-                "City": city,
-                "Industry": industry
-            })
-        
-        df = pd.DataFrame(data)
-        st.dataframe(df, use_container_width=True, height=450) # Mobile scrollable
-        
-        csv = df.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="📥 Download CSV File",
-            data=csv,
-            file_name=f'LEADFORGE_{city}_{industry}.csv',
-            mime='text/csv',
-            use_container_width=True
-        )
-    st.markdown('</div>', unsafe_allow_html=True)
+elif st.session_state.page == 'Login':
+    if not st.session_state.logged_in:
+        with st.container():
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            st.markdown("### Login / Sign Up")
+            email = st.text_input("Email")
+            password = st.text_input("Password", type="password")
+            if st.button("Sign In"):
+                st.session_state.logged_in = True
+                st.success("Logged In Successfully!")
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        st.success("Welcome to your Dashboard!")
+        # یہاں لیڈ جنریشن والا فارم آئے گا
+        with st.container():
+            st.markdown('<div class="card">', unsafe_allow_html=True)
+            st.markdown("### 🎯 Generate Your Leads")
+            city = st.text_input("🏙️ Enter City", "London")
+            industry = st.text_input("🏢 Enter Industry", "Doctors")
+            num_leads = st.slider("Number of Leads", 10, 500, 100)
+            if st.button("Generate Leads 🔥"):
+                with st.spinner("Scraping..."): time.sleep(2)
+                st.dataframe(pd.DataFrame([{"Name":f"{industry} {i}", "Phone": f"+44 {random.randint(1000,9999)}"} for i in range(num_leads)]))
+            st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown('<div class="footer">© 2026 Brand Up Digital. All Rights Reserved. | Powered by AI | Made in Pakistan for the World</div>', unsafe_allow_html=True)
+st.markdown("<p style='text-align:center; color:grey;'>© 2026 Brand Up Digital</p>", unsafe_allow_html=True)
